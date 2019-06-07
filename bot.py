@@ -9,4 +9,5 @@ while True:
             vk.method("messages.send", {"peer_id":"id", "message":"шиндейру!"})
         else:
             vk.method("messages.send", {"peer_id":"id", "message":"NANI!!!"})
-            
+            mvrekgker
+
