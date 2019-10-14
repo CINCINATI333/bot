@@ -6,6 +6,11 @@ def get_rand():
   return random.random()*2*9223372036854775806 - 9223372036854775806
 
 vk = vk_api.VkApi(token="62c86307e99237c7e583214fc442b5bf48b7b0859c3f2b7e95977e26fc1f5f6ad18d07d2651763728edf0")
+
+uid = "254229781"
+fields = "first_name, last_name"
+res = vk.method("users.get", {"user_ids": uid, "fields": fields })
+
 while True:
     messages = vk.method("messages.getConversations", {"offset": 0, "count": 20, "filter": "unread"})
     if messages and messages["count"]:
