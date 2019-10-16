@@ -18,7 +18,7 @@ while True:
         text = messages["items"][0]["last_message"]["text"]
         print(text)
         user = [ name: _name, surname: _surname ]
-	      print(_name)
+        print(_name)
         d = open('data.txt','a')
         d.write(text + '\n')
         d.close()
