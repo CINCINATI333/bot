@@ -1,6 +1,8 @@
 import vk_api
 import random
 import time
+import xlwt
+
 
 def get_rand():
   return random.random()*2*9223372036854775806 - 9223372036854775806
@@ -16,14 +18,28 @@ while True:
     if messages and messages["count"]:
         id = messages["items"][0]["conversation"]["peer"]["id"]
         text = messages["items"][0]["last_message"]["text"]
-	      print('name')
-        print(text)
-        d = open('data.txt','a')
-        d.write(text + '\n')
-        d.close()
+        
+        uid = id
+        fields = "first_name, last_name"
+        res = vk.method("users.get", {"user_ids": uid, "fields": fields })
+        user = { 'name': 'xname', 'surname': 'xsurname' }
+       
+        #user = [ name: xname, surname: xsurname ]
+        #print(xname)
+       
         if text.lower() == "омае ва му":
             vk.method("messages.send", {"peer_id": id, "message":"шиндейру!", "random_id": get_rand()})
         else:
-            vk.method("messages.send", {"peer_id": id, "message":"Nein!!!!", "random_id": get_rand()})   
-    time.sleep( 1 )
+            vk.method("messages.send", {"peer_id": id, "message":"Nein!!!!", "random_id": get_rand()})  
+        print(res[0]['first_name']) 
+        print(res[0]['last_name'])
+        text = text.split()
+        print(text[0],'  - первый элемент сообщения')
+        print(text[1], ' - второй элемент сообщения')
+        print(text[2], ' - третий элемент сообщения')
+        print(text[3], ' - четвёртый элемент сообщения')
+        wb = xlwt.Workbook()
+        ws = wb.add_sheet
+        ws.write()
 
+    time.sleep( 1 )
