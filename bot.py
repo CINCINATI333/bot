@@ -2,6 +2,9 @@ import vk_api
 import random
 import time
 import xlwt
+import xlrd
+from xlutils.copy import copy
+from openpyxl import load_workbook
 
 
 def get_rand():
@@ -38,8 +41,25 @@ while True:
         print(text[1], ' - второй элемент сообщения')
         print(text[2], ' - третий элемент сообщения')
         print(text[3], ' - четвёртый элемент сообщения')
-        wb = xlwt.Workbook()
-        ws = wb.add_sheet
-        ws.write()
+        rb = xlrd.open_workbook('1.xlsx')
+
+        wb = copy(rb)
+
+        w_sheet = wb.get_sheet(0)
+
+        w_sheet.write(0,0,text[0]) #Проба записи в ячейку (0,1) первого элемента сообщения
+        w_sheet.write(0,1,text[1])
+        a = abs(int(text[3])-int(text[2])) #Считается разность между 4 и 3 числами в сообщении
+        w_sheet.write(0,2,a) #Разность записывается в ячейку
+        
+
+        wbook = xlrd.open_workbook('1.xls') #Открыл файл Excel
+        wsheet = wbook.sheet_by_index(0) #открыл первый лист
+        a = int(wsheet.cell(0,0).value) #записал в переменную значение ячейки A1
+        
+    
+        
+        wb.save('1.xls')
+
 
     time.sleep( 1 )
