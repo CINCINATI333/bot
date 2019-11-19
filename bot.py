@@ -1,3 +1,4 @@
+  
 import vk_api
 import random
 import time
@@ -6,19 +7,10 @@ import xlrd
 from xlutils.copy import copy
 from openpyxl import load_workbook
 
-COLUMN_WIDTH = 4
-
-
 def get_rand():
   return random.random()*2*9223372036854775806 - 9223372036854775806
-'''
-#возвращает обработанную строку
-def get_clear(d):
-    return d.lower().strip()
-'''
-vk = vk_api.VkApi(token="62c86307e99237c7e583214fc442b5bf48b7b0859c3f2b7e95977e26fc1f5f6ad18d07d2651763728edf0")
-column = 1
 
+vk = vk_api.VkApi(token="62c86307e99237c7e583214fc442b5bf48b7b0859c3f2b7e95977e26fc1f5f6ad18d07d2651763728edf0")
 while True:
     messages = vk.method("messages.getConversations", {"offset": 0, "count": 20, "filter": "unread"})
     if messages and messages["count"]:
@@ -38,58 +30,40 @@ while True:
             vk.method("messages.send", {"peer_id": id, "message":"Nein!!!!", "random_id": get_rand()})  
         text = text.split() #Разбили текст сообщения на массив
         print(text)
-        for k in range(0,4):
-            print(type(text[k]))
         try:
-            match = text[0]
-            score1 = text[1]
-            score2 = text[2]
+            match = str(text[0])
+            score1 = str(text[1])
+            score2 = str(text[2])
         except():
             print( "Wrong line syntax!" )
             vk.method("messages.send", {"peer_id": id, "message":"Нипральна! Широкую на широкую!", "random_id": get_rand()})
             continue
+       
+        unumber = 4 #Разница в количестве столбцов между ячейками с номерами матчей
+        wbook = xlrd.open_workbook('2.xls') #Открыл файл Excel
+        wb = copy(wbook)
+        w_sheet = wb.get_sheet(0) #открыл первый лист
+        w_sheet2 = wbook.sheet_by_index(0) #Открыл первый лист другим методом (другой библиотекой)
+        b = float(w_sheet2.cell(0,0).value)
+        print(b)
 
-        #тут мы получили 3 слова match score1 и score2
-        #далее проверим являются ли команды 1 и 2 командами из списков
-        #team_check = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
-        wbook = xlrd.open_workbook('1.xls') #Открыл файл Excel
-        w_sheet = wbook.sheet_by_index(0) #открыл первый лист
-        #for k in range(1,10,2):
-            #team_check[k] = str(w_sheet.cell(0,k).value)
-        #print(team_check)
+        match=match+'.0'
+        a = [0 for i in range(1,100)]
+        k=0
+        i=1
+        while i<30:
+            a[i] = str(w_sheet2.cell(0,int(i)).value) #записть в переменную данных с 1-ой строки экселя (строка, столбец)
+            if a[i] == match: #если значение в 1 строке столбца i равно переменной match (присланноый номер мачта)
+                k=i
+                unumber = float(b)+4 #номер строки, в первом столбце которой будет имя и фамилия пользователя
+                w_sheet.write(0,0,float(b)+1) #Запись в ячейку количества пользователей, отправивших сообщения
+                b+=1
+            i+=1
         
-        k = 1
-        w_sheet.write(0,k,team1)
-        valid = False
-
-                    rb = xlrd.open_workbook('1.xls')
-                    wb = copy(rb)
-                    w_sheet.write(0, match*2-1,team1) #Проба записи в ячейку первого элемента сообщения
-                    w_sheet.write(0,k+2,team2)
-                    a = abs(int(team1)-int(team2)) #Считается разность между 4 и 3 числами в сообщении
-                    w_sheet.write(0,2,a) #Разность записывается в ячейку
-                    wb.save('1.xls')
-                    vk.method("messages.send", {"peer_id": id, "message":"Принято!", "random_id": get_rand()})
-                    valid = True
-        if valid == False:
-            print( "Wrong team!" )
-            vk.method("messages.send", {"peer_id": id, "message":"Нипральна! Широкую на широкую!", "random_id": get_rand()})
-
-
-        #тут мы имеем валидные тимы
-      
-        wbook = xlrd.open_workbook('1.xls') #Открыл файл Excel
-        w_sheet = wbook.sheet_by_index(0) #открыл первый лист
-        a = int(w_sheet.cell(0,int(k)).value) #записал в переменную значение ячейки A1
-        
-        rb = xlrd.open_workbook('1.xls')
-        wb = copy(rb)
-        w_sheet.write(0,k,uname + ulastname) #Проба записи в ячейку (0,k+1) первого элемента сообщения
-        #w_sheet.write(0,k+1,text[1])
-        a = abs(int(text[3])-int(text[2])) #Считается разность между 4 и 3 числами в сообщении
-        w_sheet.write(0,2,a) #Разность записывается в ячейку
-        
-        wb.save('1.xls')
+        w_sheet.write(unumber,k+2,text[1]+ '-' + text[2]) #запись счёта
+        w_sheet.write(unumber,0,uname +' '+ ulastname) #запись имени и фамилии
+        w_sheet.write(0,0 ,b) #запись количества пользователей, приславших сообщение
+        wb.save('2.xls')
 
         
         print(res[0]['first_name']) #Имя
@@ -98,7 +72,7 @@ while True:
         print(text[0],'  - первый элемент сообщения')
         print(text[1], ' - второй элемент сообщения')
         print(text[2], ' - третий элемент сообщения')
-        print(text[3], ' - четвёртый элемент сообщения')
+          
         
 
-    time.sleep( 1 )
+    time.sleep( 3 )
