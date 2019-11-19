@@ -1,4 +1,3 @@
-  
 import vk_api
 import random
 import time
@@ -7,12 +6,16 @@ import xlrd
 from xlutils.copy import copy
 from openpyxl import load_workbook
 
+COLUMN_WIDTH = 4
+
+
 def get_rand():
   return random.random()*2*9223372036854775806 - 9223372036854775806
 
 vk = vk_api.VkApi(token="62c86307e99237c7e583214fc442b5bf48b7b0859c3f2b7e95977e26fc1f5f6ad18d07d2651763728edf0")
 while True:
     messages = vk.method("messages.getConversations", {"offset": 0, "count": 20, "filter": "unread"})
+    print(messages)
     if messages and messages["count"]:
         id = messages["items"][0]["conversation"]["peer"]["id"] #Получили ID приславшего сообщение 
         text = messages["items"][0]["last_message"]["text"] #Записали  переменную текст сообщения   
@@ -34,11 +37,11 @@ while True:
             match = str(text[0])
             score1 = str(text[1])
             score2 = str(text[2])
-        except():
+        except Exception:
             print( "Wrong line syntax!" )
-            vk.method("messages.send", {"peer_id": id, "message":"Нипральна! Широкую на широкую!", "random_id": get_rand()})
+            vk.method("messages.send", {"peer_id": id, "message":"Какая-то ошибка, попробуйте ещё раз или обратитесь в службу поддержки пользователей!", "random_id": get_rand()})
             continue
-       
+
         unumber = 4 #Разница в количестве столбцов между ячейками с номерами матчей
         wbook = xlrd.open_workbook('2.xls') #Открыл файл Excel
         wb = copy(wbook)
@@ -73,6 +76,6 @@ while True:
         print(text[1], ' - второй элемент сообщения')
         print(text[2], ' - третий элемент сообщения')
           
-        
+    messages = {'count': 0, 'items': []}    
 
-    time.sleep( 3 )
+    time.sleep( 10 )
