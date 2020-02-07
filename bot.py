@@ -8,7 +8,7 @@ from openpyxl import load_workbook
 import json
 
 COLUMN_WIDTH = 4
-TOKEN = "62c86307e99237c7e583214fc442b5bf48b7b0859c3f2b7e95977e26fc1f5f6ad18d07d2651763728edf0"
+TOKEN = "токен"
 itheration_num = 1
 
 def get_rand():
